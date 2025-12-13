@@ -62,25 +62,24 @@ button{
 </div>
 
 <script>
-function teacherLogin(){
-  const u=document.getElementById("username").value.trim();
-  const p=document.getElementById("password").value.trim();
+function loginTeacher() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  let teachers=JSON.parse(localStorage.getItem("teachers"))||[];
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || {};
 
-  const teacher=teachers.find(t=>t.username===u && t.password===p);
-  if (teacher) {
-  localStorage.setItem("currentTeacher", u);
-  location.href = "teacher_dashboard.html";
-}
-
-  if(!teacher){
-    alert("Invalid login ❌");
+  if (!teachers[username]) {
+    alert("Teacher not found");
     return;
   }
 
-  localStorage.setItem("currentTeacher",u);
-  location.href="teacher_dashboard.html";
+  if (teachers[username].password !== password) {
+    alert("Wrong password");
+    return;
+  }
+
+  localStorage.setItem("currentTeacher", username);
+  window.location.href = "teacher_dashboard.html";
 }
 </script>
 </body>

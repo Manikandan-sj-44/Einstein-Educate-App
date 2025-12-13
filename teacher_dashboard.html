@@ -77,29 +77,34 @@ th {
 </div>
 
 <script>
-const table = document.getElementById("recordsTable");
-const records = JSON.parse(localStorage.getItem("studentResults")) || [];
-
-if (records.length === 0) {
-  const row = table.insertRow();
-  const cell = row.insertCell();
-  cell.colSpan = 5;
-  cell.innerText = "No student records found ❌";
-}
-else {
-  records.forEach(r => {
-    const row = table.insertRow();
-    row.insertCell().innerText = r.student;
-    row.insertCell().innerText = r.subject;
-    row.insertCell().innerText = r.level;
-    row.insertCell().innerText = r.score + " / 100";
-    row.insertCell().innerText = r.date;
-  });
+const teacher = localStorage.getItem("currentTeacher");
+if (!teacher) {
+  window.location.href = "teacher_login.html";
 }
 
-function logout() {
+const records = JSON.parse(localStorage.getItem("studentRecords")) || {};
+const table = document.getElementById("records");
+
+for (let student in records) {
+  for (let subject in records[student]) {
+    for (let level in records[student][subject]) {
+      const score = records[student][subject][level];
+
+      table.innerHTML += `
+        <tr>
+          <td>${student}</td>
+          <td>${subject}</td>
+          <td>${level}</td>
+          <td>${score}</td>
+        </tr>
+      `;
+    }
+  }
+}
+
+function logoutTeacher() {
   localStorage.removeItem("currentTeacher");
-  location.href = "teacher_login.html";
+  window.location.href = "index.html";
 }
 </script>
 

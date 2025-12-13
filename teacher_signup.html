@@ -65,24 +65,29 @@ button{
 </div>
 
 <script>
-function teacherSignup(){
-  const u=document.getElementById("username").value.trim();
-  const p=document.getElementById("password").value.trim();
+function signupTeacher() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  if(!u||!p){ alert("Fill all fields"); return; }
-
-  let teachers=JSON.parse(localStorage.getItem("teachers"))||[];
-
-  if(teachers.find(t=>t.username===u)){
-    alert("User already exists ❗");
+  if (!username || !password) {
+    alert("Fill all fields");
     return;
   }
 
-  teachers.push({username:u,password:p});
-  localStorage.setItem("teachers",JSON.stringify(teachers));
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || {};
 
-  alert("Signup successful ✅");
-  location.href="teacher_login.html";
+  if (teachers[username]) {
+    alert("Teacher already exists");
+    return;
+  }
+
+  teachers[username] = {
+    password: password
+  };
+
+  localStorage.setItem("teachers", JSON.stringify(teachers));
+  alert("Signup successful");
+  window.location.href = "teacher_login.html";
 }
 </script>
 </body>
