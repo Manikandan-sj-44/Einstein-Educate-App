@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Teacher Login</title>
 
 <style>
@@ -16,71 +15,68 @@ body{
 }
 .card{
   background:white;
-  width:340px;
+  width:350px;
   padding:25px;
   border-radius:20px;
   text-align:center;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
 }
-h2{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
-}
-.icon{ font-size:26px; color:#ff9800; }
 input{
   width:100%;
   padding:12px;
-  margin-top:12px;
-  border-radius:25px;
+  margin:10px 0;
+  border-radius:20px;
   border:1px solid #ccc;
 }
 button{
   width:100%;
-  margin-top:15px;
   padding:12px;
+  margin-top:10px;
   border:none;
   border-radius:25px;
-  font-weight:bold;
+  font-size:16px;
   cursor:pointer;
 }
-.login{ background:#4caf50; color:white; }
-.back{ background:#9e9e9e; color:white; }
+.login{background:#4caf50;color:white;}
+.back{background:#9e9e9e;color:white;}
 </style>
 </head>
 
 <body>
+
 <div class="card">
-  <h2><span class="icon">🔐</span>Teacher Login</h2>
+  <h2>🔐 Teacher Login</h2>
 
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
+  <input id="tuser" placeholder="Username">
+  <input id="tpass" type="password" placeholder="Password">
 
-  <button class="login" onclick="teacherLogin()">Login</button>
-  <button class="back" onclick="location.href='index.html'">Back</button>
+  <button class="login" id="loginBtn">Login</button>
+  <button class="back" onclick="history.back()">Back</button>
 </div>
 
 <script>
-function loginTeacher() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+document.getElementById("loginBtn").addEventListener("click", function () {
 
-  let teachers = JSON.parse(localStorage.getItem("teachers")) || {};
+  console.log("LOGIN CLICKED"); // 🔥 MUST PRINT
 
-  if (!teachers[username]) {
+  const u = document.getElementById("tuser").value.trim();
+  const p = document.getElementById("tpass").value.trim();
+
+  const teachers = JSON.parse(localStorage.getItem("teachers")) || {};
+
+  if (!teachers[u]) {
     alert("Teacher not found");
     return;
   }
 
-  if (teachers[username].password !== password) {
+  if (teachers[u].password !== p) {
     alert("Wrong password");
     return;
   }
 
-  localStorage.setItem("currentTeacher", username);
+  localStorage.setItem("currentTeacher", u);
   window.location.href = "teacher_dashboard.html";
-}
+});
 </script>
+
 </body>
 </html>
