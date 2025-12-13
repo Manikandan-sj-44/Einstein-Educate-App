@@ -54,28 +54,25 @@ button{
 </div>
 
 <script>
-document.getElementById("loginBtn").addEventListener("click", function () {
+function loginTeacher() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  console.log("LOGIN CLICKED"); // 🔥 MUST PRINT
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || {};
 
-  const u = document.getElementById("tuser").value.trim();
-  const p = document.getElementById("tpass").value.trim();
-
-  const teachers = JSON.parse(localStorage.getItem("teachers")) || {};
-
-  if (!teachers[u]) {
+  if (!teachers[username]) {
     alert("Teacher not found");
     return;
   }
 
-  if (teachers[u].password !== p) {
+  if (teachers[username].password !== password) {
     alert("Wrong password");
     return;
   }
 
-  localStorage.setItem("currentTeacher", u);
+  localStorage.setItem("currentTeacher", username);
   window.location.href = "teacher_dashboard.html";
-});
+}
 </script>
 
 </body>

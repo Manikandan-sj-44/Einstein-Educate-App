@@ -81,12 +81,11 @@ function signupTeacher() {
     return;
   }
 
-  teachers[username] = {
-    password: password
-  };
+  teachers[username] = { password };
 
   localStorage.setItem("teachers", JSON.stringify(teachers));
-  alert("Signup successful");
+
+  alert("Signup successful ✅");
   window.location.href = "teacher_login.html";
 }
 </script>
