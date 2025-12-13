@@ -1,36 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Teacher Signup</title>
-<link rel="stylesheet" href="styles.css">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(to right,#2193b0,#6dd5ed);
+  font-family:Arial;
+}
+.card{
+  background:white;
+  width:340px;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.3);
+}
+h2{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+}
+.icon{
+  font-size:26px;
+  color:#4caf50;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border-radius:25px;
+  border:1px solid #ccc;
+}
+button{
+  width:100%;
+  margin-top:15px;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.signup{ background:#4caf50; color:white; }
+.back{ background:#9e9e9e; color:white; }
+</style>
 </head>
 
 <body>
 <div class="card">
-  <h2>👨‍🏫 Teacher Signup</h2>
+  <h2><span class="icon">👩‍🏫</span>Teacher Signup</h2>
 
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
 
-  <button onclick="signup()">Signup</button>
-  <button onclick="location.href='teacher_login.html'">Login</button>
+  <button class="signup" onclick="teacherSignup()">Signup</button>
+  <button class="back" onclick="location.href='teacher_login.html'">Back</button>
 </div>
 
 <script>
-function signup(){
-  const u = user.value.trim();
-  const p = pass.value.trim();
+function teacherSignup(){
+  const u=document.getElementById("username").value.trim();
+  const p=document.getElementById("password").value.trim();
 
-  let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+  if(!u||!p){ alert("Fill all fields"); return; }
 
-  if(teachers.find(t=>t.u===u)){
-    alert("Teacher already exists");
+  let teachers=JSON.parse(localStorage.getItem("teachers"))||[];
+
+  if(teachers.find(t=>t.username===u)){
+    alert("User already exists ❗");
     return;
   }
 
-  teachers.push({u,p});
+  teachers.push({username:u,password:p});
   localStorage.setItem("teachers",JSON.stringify(teachers));
-  alert("Signup successful");
+
+  alert("Signup successful ✅");
   location.href="teacher_login.html";
 }
 </script>
