@@ -1,0 +1,15 @@
+{
+  "name": "Einstein Quiz App",
+  "short_name": "Einstein",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#2193b0",
+  "theme_color": "#2193b0",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

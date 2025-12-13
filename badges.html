@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Badges</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(to right,#8360c3,#2ebf91);
+  font-family:Arial;
+}
+
+.card{
+  background:white;
+  width:360px;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+.badge{
+  font-size:50px;
+  margin:10px;
+}
+
+button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#4caf50;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🏅 My Badges</h2>
+  <div id="badges"></div>
+  <button onclick="goBack()">⬅ Back</button>
+</div>
+
+<script>
+const progress = JSON.parse(localStorage.getItem("progress")) || {};
+const subject = localStorage.getItem("subject");
+
+let html = "";
+
+if(progress[subject]?.easy === 100)
+  html += "<div class='badge'>🥉 Easy Master</div>";
+
+if(progress[subject]?.intermediate === 100)
+  html += "<div class='badge'>🥈 Intermediate Pro</div>";
+
+if(progress[subject]?.advanced === 100)
+  html += "<div class='badge'>🥇 Advanced Champion</div>";
+
+document.getElementById("badges").innerHTML =
+  html || "<p>No badges yet 😔</p>";
+
+function goBack(){
+  location.href="dashboard.html";
+}
+</script>
+
+</body>
+</html>

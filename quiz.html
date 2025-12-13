@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Quiz</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial;
+}
+
+.card {
+  background: white;
+  width: 370px;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+}
+
+.option {
+  background: #eeeeee;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.option.correct { background: #4caf50; color: white; }
+.option.wrong { background: #e53935; color: white; }
+.option.disabled { pointer-events: none; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h3 id="question">Question</h3>
+  <p>⏱ Time: <span id="time">0</span>s</p>
+  <div id="options"></div>
+  <p><span id="subject"></span> | <span id="level"></span></p>
+  <p>Q <span id="qno"></span></p>
+</div>
+
+<script>
+/* ================== SELECT HERE ================== */
+let selectedSubject = localStorage.getItem("subject");
+let selectedLevel  = localStorage.getItem("level");
+/* ================================================= */
+
+/* ================= TIMER ================= */
+let timeLimit = 10;
+if (selectedLevel === "easy") timeLimit = 10;
+if (selectedLevel === "intermediate") timeLimit = 30;
+if (selectedLevel === "advanced") timeLimit = 60;
+
+/* ================= QUESTIONS ================= */
+const allQuestions = {
+
+maths: {
+easy: [
+ {q:"5 + 7 = ?", o:["10","11","12","13"], a:2},
+ {q:"10 × 3 = ?", o:["20","30","40","50"], a:1},
+ {q:"√16 = ?", o:["2","4","6","8"], a:1},
+ {q:"15 ÷ 5 = ?", o:["2","3","4","5"], a:1}
+],
+intermediate: [
+ {q:"3² + 4² = ?", o:["25","49","16","9"], a:0},
+ {q:"2x+3 when x=5", o:["10","11","13","15"], a:2},
+ {q:"Area = length × ?", o:["Height","Breadth","Radius","Diameter"], a:1},
+ {q:"LCM of 4 & 6", o:["12","24","6","8"], a:0},
+ {q:"25% of 200", o:["25","50","75","100"], a:1}
+],
+advanced: [
+ {q:"2x − 5 = 9", o:["5","6","7","8"], a:1},
+ {q:"a²−b² (5,3)", o:["4","16","25","34"], a:1},
+ {q:"sin 90°", o:["0","1","-1","0.5"], a:1},
+ {q:"Radius doubled, area?", o:["Same","Double","4 times","Half"], a:2},
+ {q:"Head probability", o:["1","1/4","1/2","0"], a:2},
+ {q:"d/dx of x²", o:["x","2x","x²","1"], a:1}
+]
+},
+
+english: {
+easy: [
+ {q:"Correct spelling", o:["Beautifull","Beautiful","Beautifule","Beutiful"], a:1},
+ {q:"Opposite of Hot", o:["Warm","Cold","Cool","Heat"], a:1},
+ {q:"He ___ a car", o:["have","has","had","having"], a:1},
+ {q:"Plural of Child", o:["Childs","Childrens","Children","Child"], a:2}
+],
+intermediate: [
+ {q:"Synonym of Happy", o:["Sad","Angry","Joyful","Cry"], a:2},
+ {q:"She ___ yesterday", o:["go","goes","went","going"], a:2},
+ {q:"Antonym of Brave", o:["Bold","Strong","Coward","Smart"], a:2},
+ {q:"Which is noun?", o:["Run","Blue","Quickly","Honesty"], a:3},
+ {q:"___ apple", o:["a","an","the","no article"], a:1}
+],
+advanced: [
+ {q:"Time is money", o:["Simile","Metaphor","Hyperbole","Irony"], a:1},
+ {q:"Passive: She writes letter", o:["Wrong","Wrong","A letter is written by her","Wrong"], a:2},
+ {q:"If I ___ rich", o:["am","was","were","will be"], a:2},
+ {q:"Meaning of Meticulous", o:["Careless","Lazy","Careful","Fast"], a:2},
+ {q:"Many languages person", o:["Linguist","Tourist","Author","Player"], a:0},
+ {q:"Correct sentence", o:["He don’t","He doesn’t likes","He doesn’t like","He didn’t likes"], a:2}
+]
+},
+
+cs: {
+easy: [
+ {q:"CPU full form", o:["Central Process","Central Processing","Control","Computer"], a:1},
+ {q:"Input device", o:["Monitor","Printer","Keyboard","Speaker"], a:2},
+ {q:"Binary uses", o:["0–9","1–9","0 & 1","2 & 3"], a:2},
+ {q:"RAM is", o:["Permanent","Secondary","Volatile","External"], a:2}
+],
+intermediate: [
+ {q:"Operating system", o:["Word","Linux","Chrome","Python"], a:1},
+ {q:"HTML full form", o:["Hyper Text Markup Language","Wrong","Wrong","Wrong"], a:0},
+ {q:"Not language", o:["Java","Python","SQL","Excel"], a:3},
+ {q:"Fastest memory", o:["RAM","ROM","Cache","Disk"], a:2},
+ {q:"Compiler does", o:["Executes","Translates","Deletes","Stores"], a:1}
+],
+advanced: [
+ {q:"FIFO structure", o:["Stack","Queue","Tree","Graph"], a:1},
+ {q:"Binary search", o:["O(n)","O(log n)","O(n²)","O(1)"], a:1},
+ {q:"Secure protocol", o:["HTTP","FTP","HTTPS","SMTP"], a:2},
+ {q:"Remove all records", o:["DELETE","DROP","TRUNCATE","REMOVE"], a:2},
+ {q:"Not OOP", o:["Encapsulation","Polymorphism","Compilation","Inheritance"], a:2},
+ {q:"OSI encryption layer", o:["Physical","Network","Session","Presentation"], a:3}
+]
+},
+
+gk: {
+easy: [
+ {q:"Capital of India", o:["Mumbai","Chennai","Delhi","Kolkata"], a:2},
+ {q:"National animal", o:["Lion","Tiger","Elephant","Horse"], a:1},
+ {q:"Sun rises in", o:["West","North","East","South"], a:2},
+ {q:"Largest planet", o:["Earth","Mars","Jupiter","Venus"], a:2}
+],
+intermediate: [
+ {q:"Computer inventor", o:["Babbage","Newton","Einstein","Edison"], a:0},
+ {q:"Japan currency", o:["Won","Yuan","Yen","Dollar"], a:2},
+ {q:"First President", o:["Nehru","Rajendra Prasad","Gandhi","Patel"], a:1},
+ {q:"Largest ocean", o:["Atlantic","Indian","Arctic","Pacific"], a:3},
+ {q:"Olympic rings", o:["4","5","6","7"], a:1}
+],
+advanced: [
+ {q:"Longest river", o:["Amazon","Nile","Yangtze","Mississippi"], a:1},
+ {q:"India first satellite", o:["Bhaskara","Aryabhata","Rohini","INSAT"], a:1},
+ {q:"WTO HQ", o:["Paris","New York","Geneva","London"], a:2},
+ {q:"Father constitution", o:["Nehru","Gandhi","Ambedkar","Patel"], a:2},
+ {q:"Gold symbol", o:["Ag","Au","Fe","Pb"], a:1},
+ {q:"Most abundant gas", o:["Oxygen","CO2","Nitrogen","Hydrogen"], a:2}
+]
+}
+};
+
+/* ================= LOGIC ================= */
+const quizData = allQuestions[selectedSubject][selectedLevel];
+let index = 0, correct = 0, timer, timeLeft;
+
+document.getElementById("subject").innerText = selectedSubject.toUpperCase();
+document.getElementById("level").innerText = selectedLevel.toUpperCase();
+
+function loadQuestion() {
+  clearInterval(timer);
+
+  if (index >= quizData.length) {
+    let percent = Math.round((correct / quizData.length) * 100);
+    localStorage.setItem("quizScore", percent);
+    location.href = "result.html";
+    return;
+  }
+
+  document.getElementById("question").innerText = quizData[index].q;
+  document.getElementById("qno").innerText =
+    (index + 1) + "/" + quizData.length;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  quizData[index].o.forEach((opt, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = opt;
+    div.onclick = () => checkAnswer(div, i);
+    optionsDiv.appendChild(div);
+  });
+
+  timeLeft = timeLimit;
+  document.getElementById("time").innerText = timeLeft;
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("time").innerText = timeLeft;
+    if (timeLeft === 0) autoFail();
+  }, 1000);
+}
+
+function checkAnswer(div, i) {
+  clearInterval(timer);
+  const opts = document.querySelectorAll(".option");
+  opts.forEach(o => o.classList.add("disabled"));
+
+  if (i === quizData[index].a) {
+    div.classList.add("correct");
+    correct++;
+  } else {
+    div.classList.add("wrong");
+    opts[quizData[index].a].classList.add("correct");
+  }
+
+  setTimeout(() => { index++; loadQuestion(); }, 1200);
+}
+
+function autoFail() {
+  clearInterval(timer);
+  const opts = document.querySelectorAll(".option");
+  opts.forEach(o => o.classList.add("disabled"));
+  opts[quizData[index].a].classList.add("correct");
+  setTimeout(() => { index++; loadQuestion(); }, 1200);
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>

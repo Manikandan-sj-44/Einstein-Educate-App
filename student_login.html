@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Login</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #4caf50;
+}
+
+.back {
+  background: #9e9e9e;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h1>👨‍🎓 Student Login</h1>
+  <div class="tagline">Enter your details to start learning</div>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+
+  <button class="student" onclick="login()">Login</button>
+  <button class="back" onclick="goBack()">⬅ Back</button>
+
+  <p style="margin-top:15px">
+    New user?
+    <a href="signup.html">Create account</a>
+  </p>
+
+</div>
+
+<script>
+function login() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+
+  if (u === "" || p === "") {
+    showError("Please enter username and password ❗");
+    return;
+  }
+
+  // STEP 3: Password rule check
+  if (!validatePassword(p)) {
+    showError(
+      "Password must have:\n• Min 8 characters\n• Letters\n• Numbers\n• Symbols"
+    );
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const user = users.find(
+    x => x.username === u && x.password === p
+  );
+
+  if (user) {
+    localStorage.setItem("currentUser", u);
+    window.location.href = "dashboard.html";
+  } else {
+    showError("User not found ❌ Please signup first");
+  }
+}
+
+// Password validation function
+function validatePassword(p) {
+  const lengthOK = p.length >= 8;
+  const hasLetter = /[a-zA-Z]/.test(p);
+  const hasNumber = /[0-9]/.test(p);
+  const hasSymbol = /[^a-zA-Z0-9]/.test(p);
+  return lengthOK && hasLetter && hasNumber && hasSymbol;
+}
+
+/* ENTER KEY SUPPORT */
+
+// username → enter → password
+document.getElementById("username").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    document.getElementById("password").focus();
+  }
+});
+
+// password → enter → login
+document.getElementById("password").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    login();
+  }
+});
+
+function showError(msg) {
+  let box = document.getElementById("errorBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "errorBox";
+    box.style.color = "red";
+    box.style.marginTop = "10px";
+    document.querySelector(".card").appendChild(box);
+  }
+  box.innerText = msg;
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

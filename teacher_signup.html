@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teacher Signup</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<div class="card">
+  <h2>👨‍🏫 Teacher Signup</h2>
+
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+
+  <button onclick="signup()">Signup</button>
+  <button onclick="location.href='teacher_login.html'">Login</button>
+</div>
+
+<script>
+function signup(){
+  const u = user.value.trim();
+  const p = pass.value.trim();
+
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+
+  if(teachers.find(t=>t.u===u)){
+    alert("Teacher already exists");
+    return;
+  }
+
+  teachers.push({u,p});
+  localStorage.setItem("teachers",JSON.stringify(teachers));
+  alert("Signup successful");
+  location.href="teacher_login.html";
+}
+</script>
+</body>
+</html>

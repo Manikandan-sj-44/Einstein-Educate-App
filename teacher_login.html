@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Login</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+input:focus {
+  border-color: #4caf50;
+}
+
+.back {
+  background: #9e9e9e;
+}
+.signup {
+  background: #2196f3;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h1>👩‍🏫 Teacher Login</h1>
+  <div class="tagline">Login to view student performance</div>
+
+  <input type="text" id="username" placeholder="Teacher Username">
+  <input type="password" id="password" placeholder="Password">
+
+  <button class="student" onclick="loginTeacher()">Login</button>
+  <button class="signup" onclick="goSignup()">Signup</button>
+  <button class="back" onclick="goBack()">⬅ Back</button>
+
+</div>
+
+<script>
+function loginTeacher() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+
+  if (!u || !p) {
+    alert("Please enter username and password ❗");
+    return;
+  }
+
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
+
+  const teacher = teachers.find(
+    t => t.username === u && t.password === p
+  );
+
+  if (teacher) {
+    localStorage.setItem("currentTeacher", u);
+    location.href = "teacher_dashboard.html";
+  } else {
+    alert("Teacher not found ❌ Please signup first");
+  }
+}
+
+function goSignup() {
+  location.href = "teacher_signup.html";
+}
+
+function goBack() {
+  location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

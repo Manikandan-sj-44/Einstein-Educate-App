@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+
+    background-image: url("assets/bg.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Card */
+.card {
+    background: #ffffff;
+    width: 370px;
+    padding: 30px 25px;
+    border-radius: 26px;
+    text-align: center;
+    box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    animation: rise 1s ease;
+}
+
+h1 {
+    margin: 10px 0 5px;
+    color: #333;
+}
+
+.tagline {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 32px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student {
+    background: linear-gradient(to right, #00c853, #69f0ae);
+}
+
+.teacher {
+    background: linear-gradient(to right, #2962ff, #448aff);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+}
+
+button:disabled{
+    opacity:0.5;
+}
+
+/* Animation */
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

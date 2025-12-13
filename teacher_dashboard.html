@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teacher Dashboard</title>
+
+<style>
+body{
+  margin:0;
+  padding:20px;
+  font-family:Arial;
+  background:#f4f6f8;
+}
+
+h2{text-align:center;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:10px;
+  text-align:center;
+}
+
+th{
+  background:#4caf50;
+  color:white;
+}
+
+.logout{
+  margin-top:15px;
+  padding:10px 20px;
+  background:#e53935;
+  color:white;
+  border:none;
+  border-radius:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>👨‍🏫 Student Performance</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Subject</th>
+      <th>Easy</th>
+      <th>Intermediate</th>
+      <th>Advanced</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+<script>
+const records = JSON.parse(localStorage.getItem("studentRecords")) || {};
+let rows = "";
+
+for(let student in records){
+  for(let subject in records[student]){
+    const r = records[student][subject];
+    rows += `
+      <tr>
+        <td>${student}</td>
+        <td>${subject.toUpperCase()}</td>
+        <td>${r.easy ?? "-"}</td>
+        <td>${r.intermediate ?? "-"}</td>
+        <td>${r.advanced ?? "-"}</td>
+      </tr>`;
+  }
+}
+
+document.getElementById("data").innerHTML =
+  rows || "<tr><td colspan='5'>No data yet</td></tr>";
+
+function logout(){
+  location.href="index.html";
+}
+</script>
+
+</body>
+</html>

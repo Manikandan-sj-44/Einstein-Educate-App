@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Signup</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+input:focus {
+  border-color: #4caf50;
+}
+
+.back {
+  background: #9e9e9e;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>📝 Student Signup</h1>
+  <div class="tagline">Create your account to start learning</div>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <input type="password" id="confirm" placeholder="Confirm Password">
+
+  <button class="student" onclick="signup()">Signup</button>
+  <button class="back" onclick="goBack()">⬅ Back</button>
+
+</div>
+
+<script>
+function signup() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+  const c = document.getElementById("confirm").value.trim();
+
+  // Empty check
+  if (u === "" || p === "" || c === "") {
+    showError("All fields are required ❗");
+    return;
+  }
+
+  // Password rules
+  if (!validatePassword(p)) {
+    showError(
+      "Password must contain:\n• Min 8 characters\n• 1 Number\n• 1 Letter\n• 1 Symbol"
+    );
+    return;
+  }
+
+  // Password match
+  if (p !== c) {
+    showError("Passwords do not match ❌");
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  // Check existing user
+  const exists = users.find(x => x.username === u);
+  if (exists) {
+    showError("User already exists ❌ Please login");
+    return;
+  }
+
+  // Save new user
+  users.push({ username: u, password: p });
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Signup successful 🎉 Please login");
+  window.location.href = "student_login.html";
+}
+
+// Password validation
+function validatePassword(p) {
+  const lengthOK = p.length >= 8;
+  const hasLetter = /[a-zA-Z]/.test(p);
+  const hasNumber = /[0-9]/.test(p);
+  const hasSymbol = /[^a-zA-Z0-9]/.test(p);
+  return lengthOK && hasLetter && hasNumber && hasSymbol;
+}
+
+function showError(msg) {
+  let box = document.getElementById("errorBox");
+  if (!box) {
+    box = document.createElement("div");
+    box.id = "errorBox";
+    box.style.color = "red";
+    box.style.marginTop = "10px";
+    document.querySelector(".card").appendChild(box);
+  }
+  box.innerText = msg;
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

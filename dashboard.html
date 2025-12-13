@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+.dashboard-title {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* Subject cards */
+.subject {
+  padding: 20px;
+  border-radius: 18px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.subject:hover {
+  transform: scale(1.05);
+}
+
+.selected {
+  outline: 3px solid #000;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+}
+
+/* Colors */
+.maths { background:#ff9800; }
+.english { background:#9c27b0; }
+.cs { background:#03a9f4; }
+.gk { background:#4caf50; }
+
+/* Level buttons */
+.level-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 25px;
+  border: none;
+  font-weight: bold;
+}
+
+.locked {
+  background:#bdbdbd;
+  cursor:not-allowed;
+}
+
+.unlocked {
+  background:#4caf50;
+  color:white;
+  cursor:pointer;
+}
+
+.logout {
+  margin-top:20px;
+  background:#9e9e9e;
+  color:white;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  width:100%;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h3 class="dashboard-title">📚 Choose Subject</h3>
+
+  <div class="subject-grid">
+    <div class="subject maths" data-sub="maths" onclick="selectSubject('maths')">
+      ➕ Maths
+    </div>
+
+    <div class="subject english" data-sub="english" onclick="selectSubject('english')">
+      ✍️ English
+    </div>
+
+    <div class="subject cs" data-sub="cs" onclick="selectSubject('cs')">
+      💻 CS
+    </div>
+
+    <div class="subject gk" data-sub="gk" onclick="selectSubject('gk')">
+      🌍 GK
+    </div>
+  </div>
+
+  <h3 style="margin-top:20px;">Choose Level</h3>
+
+  <button id="easy" class="level-btn unlocked" onclick="startQuiz('easy')">
+    EASY
+  </button>
+
+  <button id="intermediate" class="level-btn locked">
+    INTERMEDIATE 🔒
+  </button>
+
+  <button id="advanced" class="level-btn locked">
+    ADVANCED 🔒
+  </button>
+
+  <button onclick="location.href='badges.html'" class="level-btn unlocked">
+    🏅 View Badges
+  </button>
+
+  <button class="logout" onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+let selectedSubject = localStorage.getItem("subject") || null;
+
+/* Restore selected subject highlight */
+if (selectedSubject) {
+  document.querySelectorAll(".subject").forEach(el => {
+    if (el.dataset.sub === selectedSubject) {
+      el.classList.add("selected");
+    }
+  });
+  unlockLevels();
+}
+
+/* Subject select */
+function selectSubject(subject) {
+  selectedSubject = subject;
+  localStorage.setItem("subject", subject);
+
+  document.querySelectorAll(".subject")
+    .forEach(el => el.classList.remove("selected"));
+
+  document.querySelector(`[data-sub="${subject}"]`)
+    .classList.add("selected");
+
+  unlockLevels();
+}
+
+/* Progress based unlock */
+function unlockLevels() {
+  const progress = JSON.parse(localStorage.getItem("progress")) || {};
+  
+  resetLevels();
+
+  if (progress[selectedSubject]?.easy === 100) {
+    unlock("intermediate");
+  }
+  if (progress[selectedSubject]?.intermediate === 100) {
+    unlock("advanced");
+  }
+}
+
+function resetLevels() {
+  ["intermediate","advanced"].forEach(id => {
+    const btn = document.getElementById(id);
+    btn.className = "level-btn locked";
+    btn.innerHTML = id.toUpperCase() + " 🔒";
+    btn.onclick = null;
+  });
+}
+
+function unlock(id) {
+  const btn = document.getElementById(id);
+  btn.classList.remove("locked");
+  btn.classList.add("unlocked");
+  btn.innerHTML = id.toUpperCase();
+  btn.onclick = () => startQuiz(id);
+}
+
+/* Start quiz */
+function startQuiz(level) {
+  if (!selectedSubject) {
+    alert("Please select subject first ❗");
+    return;
+  }
+  localStorage.setItem("level", level);
+  location.href = "quiz.html";
+}
+
+/* Logout */
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

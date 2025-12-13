@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Quiz Result</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(to right, #2193b0, #6dd5ed);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial;
+}
+
+.card {
+  background: white;
+  width: 350px;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+}
+
+.badge {
+  font-size: 60px;
+  margin: 15px 0;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  background: #4caf50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Your Result</h2>
+  <div class="badge" id="badge">🎯</div>
+  <h3 id="message"></h3>
+  <p>Score: <span id="score"></span> / 100</p>
+
+  <br>
+  <button onclick="goDashboard()">Go to Dashboard</button>
+</div>
+
+<script>
+/* ================= BASIC DATA ================= */
+const score   = parseInt(localStorage.getItem("quizScore")) || 0;
+const subject = localStorage.getItem("subject");
+const level   = localStorage.getItem("level");
+const student = localStorage.getItem("currentUser");
+
+document.getElementById("score").innerText = score;
+
+/* ================= BADGE LOGIC ================= */
+let badge = "🎯";
+let msg = "Good Try!";
+
+if (score === 100) {
+  badge = "🏆";
+  msg = "Perfect Score! Level Unlocked 🔓";
+} 
+else if (score >= 80) {
+  badge = "🥇";
+  msg = "Great Job! Try for 100 to unlock next level";
+}
+else if (score >= 50) {
+  badge = "🙂";
+  msg = "Good Try! Practice more";
+}
+else {
+  badge = "🌱";
+  msg = "Don't worry! You will improve";
+}
+
+document.getElementById("badge").innerText = badge;
+document.getElementById("message").innerText = msg;
+
+/* ================= SAVE FOR TEACHER ================= */
+// get old records
+let records = JSON.parse(localStorage.getItem("studentRecords")) || {};
+
+// create student entry if not exist
+if (!records[student]) {
+  records[student] = {};
+}
+
+// create subject entry if not exist
+if (!records[student][subject]) {
+  records[student][subject] = {};
+}
+
+// save level score
+records[student][subject][level] = score;
+
+// save back to localStorage
+localStorage.setItem("studentRecords", JSON.stringify(records));
+
+/* ================= LEVEL UNLOCK ================= */
+let progress = JSON.parse(localStorage.getItem("progress")) || {};
+
+if (!progress[subject]) {
+  progress[subject] = {};
+}
+
+if (score === 100) {
+  progress[subject][level] = 100;
+}
+
+localStorage.setItem("progress", JSON.stringify(progress));
+
+/* ================= NAVIGATION ================= */
+function goDashboard() {
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>
