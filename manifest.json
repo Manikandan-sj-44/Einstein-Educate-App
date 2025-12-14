@@ -1,5 +1,4 @@
 {
-  "id": "/Einstein-Educate-App/",
   "name": "Einstein Educate",
   "short_name": "Einstein",
   "description": "Smart learning app for school students",
@@ -10,12 +9,12 @@
   "theme_color": "#2193b0",
   "icons": [
     {
-      "src": "/Einstein-Educate-App/icons/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/Einstein-Educate-App/icons/icon-512.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
