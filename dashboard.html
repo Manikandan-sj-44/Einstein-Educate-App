@@ -18,7 +18,6 @@
   gap: 15px;
 }
 
-/* Subject cards */
 .subject {
   padding: 20px;
   border-radius: 18px;
@@ -33,9 +32,11 @@
   transform: scale(1.05);
 }
 
+/* 🔥 SELECTED SUBJECT */
 .selected {
-  outline: 3px solid #000;
-  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  outline: 4px solid #000;
+  outline-offset: 3px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 /* Colors */
@@ -44,7 +45,7 @@
 .cs { background:#03a9f4; }
 .gk { background:#4caf50; }
 
-/* Level buttons */
+/* Levels */
 .level-btn {
   width: 100%;
   padding: 12px;
@@ -82,85 +83,63 @@
 
 <div class="card">
 
-  <h3 class="dashboard-title">📚 Choose Subject</h3>
+<h3 class="dashboard-title">📚 Choose Subject</h3>
 
-  <div class="subject-grid">
-    <div class="subject maths" data-sub="maths" onclick="selectSubject('maths')">
-      ➕ Maths
-    </div>
+<div class="subject-grid">
+  <div class="subject maths" data-sub="maths">➕ Maths</div>
+  <div class="subject english" data-sub="english">✍️ English</div>
+  <div class="subject cs" data-sub="cs">💻 CS</div>
+  <div class="subject gk" data-sub="gk">🌍 GK</div>
+</div>
 
-    <div class="subject english" data-sub="english" onclick="selectSubject('english')">
-      ✍️ English
-    </div>
+<h3 style="margin-top:20px;">Choose Level</h3>
 
-    <div class="subject cs" data-sub="cs" onclick="selectSubject('cs')">
-      💻 CS
-    </div>
+<button id="easy" class="level-btn unlocked">EASY</button>
+<button id="intermediate" class="level-btn locked">INTERMEDIATE 🔒</button>
+<button id="advanced" class="level-btn locked">ADVANCED 🔒</button>
 
-    <div class="subject gk" data-sub="gk" onclick="selectSubject('gk')">
-      🌍 GK
-    </div>
-  </div>
+<button onclick="location.href='badges.html'" class="level-btn unlocked">
+🏅 View Badges
+</button>
 
-  <h3 style="margin-top:20px;">Choose Level</h3>
-
-  <button id="easy" class="level-btn unlocked" onclick="startQuiz('easy')">
-    EASY
-  </button>
-
-  <button id="intermediate" class="level-btn locked">
-    INTERMEDIATE 🔒
-  </button>
-
-  <button id="advanced" class="level-btn locked">
-    ADVANCED 🔒
-  </button>
-
-  <button onclick="location.href='badges.html'" class="level-btn unlocked">
-    🏅 View Badges
-  </button>
-
-  <button class="logout" onclick="logout()">Logout</button>
+<button class="logout" onclick="logout()">Logout</button>
 
 </div>
 
 <script>
-let selectedSubject = localStorage.getItem("subject") || null;
+let selectedSubject = null;
 
-/* Restore selected subject highlight */
-if (selectedSubject) {
-  document.querySelectorAll(".subject").forEach(el => {
-    if (el.dataset.sub === selectedSubject) {
-      el.classList.add("selected");
-    }
+/* ---------- SUBJECT CLICK ---------- */
+document.querySelectorAll(".subject").forEach(card => {
+  card.addEventListener("click", () => {
+    selectedSubject = card.dataset.sub;
+    localStorage.setItem("subject", selectedSubject);
+
+    document.querySelectorAll(".subject")
+      .forEach(el => el.classList.remove("selected"));
+
+    card.classList.add("selected");
+
+    applyProgress();
   });
-  unlockLevels();
-}
+});
 
-/* Subject select */
-function selectSubject(subject) {
-  selectedSubject = subject;
-  localStorage.setItem("subject", subject);
-
-  document.querySelectorAll(".subject")
-    .forEach(el => el.classList.remove("selected"));
-
-  document.querySelector(`[data-sub="${subject}"]`)
-    .classList.add("selected");
-
-  unlockLevels();
-}
-
-/* Progress based unlock */
-function unlockLevels() {
+/* ---------- LEVEL CONTROL ---------- */
+function applyProgress() {
   const progress = JSON.parse(localStorage.getItem("progress")) || {};
-  
+
   resetLevels();
 
-  if (progress[selectedSubject]?.easy === 100) {
+  // Easy always unlocked
+  unlock("easy");
+
+  if (!progress[selectedSubject]) return;
+
+  if (progress[selectedSubject].easy === 100) {
     unlock("intermediate");
   }
-  if (progress[selectedSubject]?.intermediate === 100) {
+
+  if (progress[selectedSubject].intermediate === 100) {
     unlock("advanced");
   }
 }
@@ -169,20 +148,19 @@ function resetLevels() {
   ["intermediate","advanced"].forEach(id => {
     const btn = document.getElementById(id);
     btn.className = "level-btn locked";
-    btn.innerHTML = id.toUpperCase() + " 🔒";
+    btn.innerText = id.toUpperCase() + " 🔒";
     btn.onclick = null;
   });
 }
 
 function unlock(id) {
   const btn = document.getElementById(id);
-  btn.classList.remove("locked");
-  btn.classList.add("unlocked");
-  btn.innerHTML = id.toUpperCase();
+  btn.className = "level-btn unlocked";
+  btn.innerText = id.toUpperCase();
   btn.onclick = () => startQuiz(id);
 }
 
-/* Start quiz */
+/* ---------- START QUIZ ---------- */
 function startQuiz(level) {
   if (!selectedSubject) {
     alert("Please select subject first ❗");
@@ -192,7 +170,23 @@ function startQuiz(level) {
   location.href = "quiz.html";
 }
 
-/* Logout */
+/* ---------- RESTORE ON LOAD ---------- */
+window.onload = () => {
+  const subject = localStorage.getItem("subject");
+  if (!subject) return;
+
+  selectedSubject = subject;
+
+  document.querySelectorAll(".subject").forEach(el => {
+    if (el.dataset.sub === subject) {
+      el.classList.add("selected");
+    }
+  });
+
+  applyProgress();
+};
+
+/* ---------- LOGOUT ---------- */
 function logout() {
   localStorage.removeItem("currentUser");
   location.href = "index.html";

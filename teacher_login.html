@@ -1,77 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Teacher Login</title>
 
+<link rel="stylesheet" href="styles.css">
+
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(to right,#2193b0,#6dd5ed);
-  font-family:Arial;
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 15px;
 }
-.card{
-  background:white;
-  width:350px;
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
+
+input:focus {
+  border-color: #4caf50;
 }
-input{
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:20px;
-  border:1px solid #ccc;
+
+.back {
+  background: #9e9e9e;
 }
-button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:25px;
-  font-size:16px;
-  cursor:pointer;
+.signup {
+  background: #2196f3;
 }
-.login{background:#4caf50;color:white;}
-.back{background:#9e9e9e;color:white;}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-  <h2>🔐 Teacher Login</h2>
 
-  <input id="tuser" placeholder="Username">
-  <input id="tpass" type="password" placeholder="Password">
+  <h1>👩‍🏫 Teacher Login</h1>
+  <div class="tagline">Login to view student performance</div>
 
-  <button class="login" id="loginBtn">Login</button>
-  <button class="back" onclick="history.back()">Back</button>
+  <input type="text" id="username" placeholder="Teacher Username">
+  <input type="password" id="password" placeholder="Password">
+
+  <button class="student" onclick="loginTeacher()">Login</button>
+  <button class="signup" onclick="goSignup()">Signup</button>
+  <button class="back" onclick="goBack()">⬅ Back</button>
+
 </div>
 
 <script>
 function loginTeacher() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
-  let teachers = JSON.parse(localStorage.getItem("teachers")) || {};
-
-  if (!teachers[username]) {
-    alert("Teacher not found");
+  if (!u || !p) {
+    alert("Please enter username and password ❗");
     return;
   }
 
-  if (teachers[username].password !== password) {
-    alert("Wrong password");
-    return;
-  }
+  let teachers = JSON.parse(localStorage.getItem("teachers")) || [];
 
-  localStorage.setItem("currentTeacher", username);
-  window.location.href = "teacher_dashboard.html";
+  const teacher = teachers.find(
+    t => t.username === u && t.password === p
+  );
+
+  if (teacher) {
+    localStorage.setItem("currentTeacher", u);
+    location.href = "teacher_dashboard.html";
+  } else {
+    alert("Teacher not found ❌ Please signup first");
+  }
+}
+
+function goSignup() {
+  location.href = "teacher_signup.html";
+}
+
+function goBack() {
+  location.href = "index.html";
 }
 </script>
 
