@@ -2,6 +2,7 @@
   "name": "Einstein Educate",
   "short_name": "Einstein",
   "start_url": "/Einstein-Educate-App/index.html",
+  "scope": "/Einstein-Educate-App/",
   "display": "standalone",
   "background_color": "#2193b0",
   "theme_color": "#2193b0",
